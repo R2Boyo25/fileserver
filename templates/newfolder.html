@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>New Folder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <div class="container" align='center'>
+      <h1 align='center'>Make New Folder</h1>
+      <br>
+      <form method="post" align='center'>
+        <input type="text" placeholder="Name" name="name" value="{{
+          request.form.name }}">
+        <input class="btn btn-default" type="submit" value="Create">
+      </form>
+      <p align='center'>Click <a href="/">here</a> to go home.</p>
+    </div>
+  </body>
+</html>
