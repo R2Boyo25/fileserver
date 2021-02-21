@@ -1,0 +1,211 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="http://10.0.0.216:5000/uploads/Main.css">
+        <style>
+            body {
+              font-family: Arial, Helvetica, sans-serif;
+            }
+            
+            * {
+              box-sizing: border-box;
+            }
+            
+            /* Create a column layout with Flexbox */
+            .row {
+              display: flex;
+            }
+            
+            /* Left column (menu) */
+            .left {
+              flex: 35%;
+              padding: 15px 0;
+            }
+            
+            .left h2 {
+              padding-left: 8px;
+            }
+            
+            /* Right column (page content) */
+            .right {
+              flex: 65%;
+              padding: 15px;
+            }
+            
+            /* Style the search box */
+            #mySearch {
+              width: 100%;
+              font-size: 18px;
+              padding: 11px;
+              border: 1px solid #ddd;
+            }
+            
+            /* Style the navigation menu inside the left column */
+            #myMenu {
+              list-style-type: none;
+              padding: 0;
+              margin: 0;
+              clear: both;
+            }
+            
+            #myMenu li a {
+              padding: 12px;
+              text-decoration: none;
+              color: black;
+              display: block;
+              background-color: white;
+            }
+            
+            #myMenu li a:hover {
+              /*background-color: #eee;*/
+              background-color: dimgray;
+            }
+
+            .navbar {
+              background-color: gray;
+            }
+            
+            .navbar div {
+              margin: 10px;
+            }
+
+            .lef {float:left; margin: 2px;}
+            .rig {float:right;}  
+            .dropdown .dropbtn {
+              font-size: 16px;  
+              border: none;
+              outline: none;
+              color: white;
+              padding: 14px 16px;
+              background-color: inherit;
+              font-family: inherit;
+              margin: 0;
+            }
+
+            .form-submit-button {
+
+              background: #0066A2;
+
+              color: white;
+
+              border-style: outset;
+
+              border-color: #0066A2;
+
+              height: 50px;
+
+              width: 100px;
+
+              font: bold 15px arial, sans-serif;
+
+              text-shadow:none;
+              
+              border-radius: 300px;
+
+            }
+
+            .custom-file-upload {
+              border: 1px solid #ccc;
+              display: inline-block;
+              padding: 14px 12px;
+              cursor: pointer;
+              height: 50px;
+              background: #0066A2;
+              color: white;
+              border-style: outset;
+              border-color: #0066A2;
+              border-radius: 300px;
+            }
+
+            li {
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+              margin: 10px
+            }
+
+            .dropdown-content {
+              display: none;
+              position: absolute;
+              background-color: #f9f9f9;
+              min-width: 160px;
+              box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+              z-index: 1;
+            }
+
+              .dropdown-content a {
+              float: none;
+              color: black;
+              padding: 12px 16px;
+              text-decoration: none;
+              display: block;
+              text-align: right;
+            }
+
+            .dropdown:hover .dropdown-one, #link1:hover > .dropdown-two {
+              display: block;
+            }
+
+            .dropdown-one .dItem {
+                color: black;
+                padding: 12px 16px;
+                display: block;
+                text-align: left;
+            }
+
+            .dropdown-one .dItem:hover, .dropdown-two a:hover {
+                background-color: #ddd;
+            }
+            </style>
+    </head>
+    <body>
+      <div style='max-width: 1000px; margin:0 auto;  height:100%; overflow:auto; background-color: whitesmoke; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);' align=center>
+        <div style='margin: 4px;'>
+        <div class="navbar">
+          <form method=post enctype=multipart/form-data>
+            <div class="lef">
+            <label class="custom-file-upload">
+              <input type=file name=file>
+            </label>
+            </div>
+            <div class="rig">
+              <button type=submit class='form-submit-button'>Upload</button>
+            </div>
+          </form>
+          <div align=center>
+          {% if not loggedin %} 
+              <a href='/register' class=blue1>Register</a>
+              <a href="/login" class="active">Login</a>
+          {% endif%}
+          {% if loggedin%}
+              <a href="/logout" class='bad1'>Logout</a>
+          {% endif %}
+        </div>
+      <a href="" class='loginst'> {{ logged }}</a>
+        </div> 
+        {% if loggedin %}
+        {{ links | safe }}
+        {% endif %}
+        {% if not loggedin %}
+          <h1>You are not logged in!</h1>
+        {% endif %}
+
+        <script>
+            function myFunction() {
+              var input, filter, ul, li, a, i;
+              input = document.getElementById("mySearch");
+              filter = input.value.toUpperCase();
+              ul = document.getElementById("myMenu");
+              li = ul.getElementsByTagName("li");
+              for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                  li[i].style.display = "";
+                } else {
+                  li[i].style.display = "none";
+                }
+              }
+            }
+        </script>
+        </div>
+      </div>
+    </body>
+</html>
