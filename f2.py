@@ -37,7 +37,7 @@ def folder2view(folder, fo2):
 
     else:
 
-        links=[f'<!--This Page Was Auto Generated-->\n<div align=\"center\">\n<br><h1><b>{folder}</b></h1><br>\n<input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">\n<br><ul id="myMenu">']
+        links=[f'<!--This Page Was Auto Generated-->\n<div align=\"center\">\n<br><h1><b>{folder} / {fo2}</b></h1><br>\n<input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">\n<br><ul id="myMenu">']
 
         f, fo = getFiles(UPLOAD_FOLDER + f"/{session['username']}" + "/" + folder + "/" + fo2)
 
