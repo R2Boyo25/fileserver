@@ -1,35 +1,13 @@
-# import the Flask class from the flask module
-from flask import Flask, abort, render_template, redirect, url_for, request, session, send_from_directory, flash, jsonify
-from markupsafe import escape
-import random
-import os
-from werkzeug.utils import secure_filename
-import json
-from math import *
-from database import Database as db
+from ipts import *
+from funcs import *
 
 # create the application object
 app = Flask(__name__)
-UPLOAD_FOLDER = r'/home/pi/files'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'jar'}
-from os import walk
-
 app.secret_key = b'\xa1\x98\xee\x04\x9d.\xa3\xcf\xc6\xc5\xb5\xf9\xc8u(\xef'
-# use decorators to link the function to a url
 
-def allowed_file(filename):
-    return "." in filename
-
-def getFiles(UPLOAD_FOLDER):
-    f = []
-    fo = []
-    for (dirpath, dirnames, filenames) in walk(UPLOAD_FOLDER):
-        f.extend(filenames)
-        fo.extend(dirnames)
-        break
-
-    return f, fo
+app.register_blueprint(f2)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -100,7 +78,7 @@ def home():
 @app.route('/folder/<folder>', methods=['GET', 'POST'])
 def folderview(folder):
 
-    #iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><div class=\"navbar\" style='background-color: white;'><div class=\"dropdown\"><button class=\"dropbtn\" style='background-color: gray;'>Options <i class=\"fa fa-caret-down\"></i><div class=\"dropdown-content\"><a> </a><a href={2} class=\"fa fa-download\"> Download</a><a> </a><a href={3} class=\"fa fa-trash\"> Delete</a></div></button></div></div> </div></li><br><br><br>"
+    fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-trash\"> Delete</a> </div></li><br><br><br>"
 
     iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
 
@@ -140,8 +118,11 @@ def folderview(folder):
         for thing in f:
             links.append(iTemplate.format(f'/fuploads/{folder}/'+thing, thing,f'/fuploads/{folder}/'+thing+"/download", f'/fuploads/{folder}/'+thing+"/delete"))
 
-        links.append("\n  <li><a href='/'><i class='fa fa-arrow-left'></i><b> Main Folder</b></a></li>")
+        for folder2 in fo:
+            links.append(fTemplate.format('/folder/'+folder+"/"+folder2, folder2, '/uploads/'+folder+"/"+folder2+'/delete'))
 
+        links.append("\n  <li><a href='/'><i class='fa fa-arrow-left'></i><b> Main Folder</b></a></li>")
+        links.append(f"\n  <li><a href='/{folder}/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></li>")
         links.append('</ul></div>')
 
         if 'username' in session:
@@ -181,7 +162,13 @@ def delete_file(filename):
 
         except:
 
-            os.rmdir(UPLOAD_FOLDER + f"/{session['username']}" + "/" + filename)
+            try:
+
+                os.rmdir(UPLOAD_FOLDER + f"/{session['username']}" + "/" + filename)
+
+            except Exception as e:
+
+                abort(405, f"{filename} is a folder and is not empty!")
     
     return redirect("/")
 
@@ -234,6 +221,23 @@ def makeFolder():
     else:
 
         return render_template("newfolder.html")
+        
+@app.route('/<fo>/newfolder', methods=['GET', 'POST'])
+def makeFolderRecursive(fo):
+
+    if request.method == 'POST':
+    
+        folder = request.form['name']
+
+        if not os.path.exists(UPLOAD_FOLDER + f"/{session['username']}" + '/' + fo + "/" + folder):
+
+            os.mkdir(UPLOAD_FOLDER + f"/{session['username']}" + '/' + fo + "/" + folder)
+
+        return redirect("/")
+        
+    else:
+
+        return render_template("newfolder.html")
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -246,6 +250,10 @@ def bad_requesthandler(e):
 @app.errorhandler(403)
 def permissiondeniedhandler(e):
     return render_template('403.html', error=e)
+
+@app.errorhandler(405)
+def methodNotAllowedhandler(e):
+    return render_template('405.html', error=e)
 
 @app.route("/sitemap/")
 def sitemap():
@@ -314,4 +322,4 @@ def logout():
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
