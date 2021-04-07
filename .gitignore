@@ -1,1 +1,3 @@
 logins.json
+__pycache__/*
+*.cypthon*

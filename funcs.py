@@ -15,3 +15,11 @@ def getFiles(UPLOAD_FOLDER):
         break
 
     return f, fo
+
+def restart_program():
+    """Restarts the current program, with file objects and descriptors
+       cleanup
+    """
+
+    python = sys.executable
+    os.execl(python, python, *sys.argv)

@@ -9,6 +9,12 @@ app.secret_key = b'\xa1\x98\xee\x04\x9d.\xa3\xcf\xc6\xc5\xb5\xf9\xc8u(\xef'
 
 app.register_blueprint(f2)
 
+if not os.path.exists("logins.json"):
+
+    with open("logins.json", "w") as file:
+
+        file.write("{}")
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
 
@@ -318,6 +324,11 @@ def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('home'))
+
+@app.route('/restart/')
+def restartServer():
+
+    restart_program()
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
