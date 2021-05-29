@@ -1,14 +1,13 @@
 A simple fileserver written in flask. 
 
-Has per-account file storage and can have 1-folder-deep folders
+Has per-account file storage and can have infinitely nested folders
 
-Requires flask and you need to change the `UPLOAD_FOLDER` (in `file.py`) to a valid folder on your machine.
+Requires flask and you need to change the `UPLOAD_FOLDER` (in `f2.py`) to a valid folder on your machine.
 
-To work you need to make a file called `logins.json` with:
+The program generates a file called `logins.json` with the contents of:
 ```
 {}
 ```
-as the contents (this is due to me using the same server for testing and for me... sorry)
 You can add accounts manually in that file, heres an example:
 ```json
 {
@@ -17,3 +16,4 @@ You can add accounts manually in that file, heres an example:
 "Name3":"password3"
 }
 ```
+(Will switch to hashing passwords later on)
