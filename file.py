@@ -20,7 +20,7 @@ def home():
 
     #iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><div class=\"navbar\" style='background-color: white;'><div class=\"dropdown\"><button class=\"dropbtn\" style='background-color: gray;'>Options <i class=\"fa fa-caret-down\"></i><div class=\"dropdown-content\"><a> </a><a href={2} class=\"fa fa-download\"> Download</a><a> </a><a href={3} class=\"fa fa-trash\"> Delete</a></div></button></div></div> </div></li><br><br><br>"
 
-    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
+    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={5} class=\"fa fa-edit\"> Edit</a><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
 
     fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-trash\"> Delete</a> </div></li><br><br><br>"
 
@@ -64,13 +64,14 @@ def home():
             return render_template('sitemap.html', links=" ", logged='You are not logged in')
 
         for thing in f:
-            links.append(iTemplate.format('/uploads/'+thing, thing,'/uploads/'+thing+"/download", '/uploads/'+thing+"/delete"))
+            links.append(iTemplate.format('/uploads/'+thing, thing,'/uploads/'+thing+"/download", '/uploads/'+thing+"/delete", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png" if isImage(getExt(thing)) else "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/12.File-512.png", f'/uploads/'+thing+"/edit"))
 
         for folder in fo:
 
-            links.append(fTemplate.format('/folder/'+folder, folder, '/uploads/'+folder+'/delete'))
+            links.append(fTemplate.format('/'+folder, folder, '/uploads/'+folder+'/delete'))
 
         links.append("\n  <li><a href='/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></li>")
+        links.append("\n  <li><a href='/newfile'><i class='fa fa-plus'></i><b> New File</b></a></li>")
         links.append('</ul></div>')
 
         if 'username' in session:
@@ -81,12 +82,12 @@ def home():
 
             return render_template('sitemap.html', links=''.join(links), logged='You are not logged in')
 
-@app.route('/folder/<folder>', methods=['GET', 'POST'])
+@app.route('/<path:folder>/', methods=['GET', 'POST'])
 def folderview(folder):
 
     fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-trash\"> Delete</a> </div></li><br><br><br>"
 
-    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
+    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={5} class=\"fa fa-edit\"> Edit</a><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -109,7 +110,7 @@ def folderview(folder):
 
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'] + f"/{session['username']}" + '/' + folder, filename))
-            return redirect('/fuploads/{}/{}'.format(folder, filename))
+            return redirect('/uploads/{}/{}'.format(folder, filename))
 
         else:
 
@@ -122,13 +123,14 @@ def folderview(folder):
         f, fo = getFiles(UPLOAD_FOLDER + f"/{session['username']}" + "/" + folder)
 
         for thing in f:
-            links.append(iTemplate.format(f'/fuploads/{folder}/'+thing, thing,f'/fuploads/{folder}/'+thing+"/download", f'/fuploads/{folder}/'+thing+"/delete"))
+            links.append(iTemplate.format(f'/uploads/{folder}/'+thing, thing, f'/uploads/{folder}/'+thing+"/download", f'/uploads/{folder}/'+thing+"/delete", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png" if isImage(getExt(thing)) else "https://cdn4.iconfinder.com/data/icons/48-bubbles/48/12.File-512.png", f'/uploads/{folder}/'+thing+"/edit",))
 
         for folder2 in fo:
-            links.append(fTemplate.format('/folder/'+folder+"/"+folder2, folder2, '/uploads/'+folder+"/"+folder2+'/delete'))
+            links.append(fTemplate.format('/'+folder+"/"+folder2, folder2, '/uploads/'+folder+"/"+folder2+'/delete'))
 
-        links.append("\n  <li><a href='/'><i class='fa fa-arrow-left'></i><b> Main Folder</b></a></li>")
+        links.append(f"\n  <li><a href='/{'/'.join(folder.split('/')[0:-1])}'><i class='fa fa-arrow-left'></i><b> Back</b></a></li>")
         links.append(f"\n  <li><a href='/{folder}/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></li>")
+        links.append(f"\n  <li><a href='/{folder}/newfile'><i class='fa fa-plus'></i><b> New File</b></a></li>")
         links.append('</ul></div>')
 
         if 'username' in session:
@@ -146,7 +148,13 @@ def display_file(filename):
                                 filename)
     else:
 
-        return redirect('/')
+        if "/" in filename:
+        
+            return redirect('/' + '/'.join(filename.split('/')[0:-1]))
+        
+        else:
+
+            return redirect("/")
 
 @app.route('/uploads/<path:filename>/download')
 def download_file(filename):
@@ -155,7 +163,13 @@ def download_file(filename):
                                 filename, as_attachment=True)
     else:
 
-        return redirect('/')
+        if "/" in filename:
+        
+            return redirect('/' + '/'.join(filename.split('/')[0:-1]))
+        
+        else:
+
+            return redirect("/")
 
 @app.route('/uploads/<path:filename>/delete')
 def delete_file(filename):
@@ -176,40 +190,32 @@ def delete_file(filename):
 
                 abort(405, f"{filename} is a folder and is not empty!")
     
-    return redirect("/")
-
-@app.route('/fuploads/<folder>/<path:filename>')
-def fdisplay_file(folder, filename):
-    if filename!='<path:filename>':
-        return send_from_directory(app.config['UPLOAD_FOLDER'] + f"/{session['username']}" + f"/{folder}",
-                                filename)
+    if "/" in filename:
+        
+        return redirect('/' + '/'.join(filename.split('/')[0:-1]))
+    
     else:
 
-        return redirect('/')
+        return redirect("/")
 
-@app.route('/fuploads/<folder>/<path:filename>/download')
-def fdownload_file(folder, filename):
-    if filename!='<path:filename>':
-        return send_from_directory(app.config['UPLOAD_FOLDER'] + f"/{session['username']}" + f"/{folder}",
-                                filename, as_attachment=True)
+@app.route('/uploads/<path:filename>/edit', methods=['GET', 'POST'])
+def edit_file(filename):
+
+    if request.method == 'POST':
+
+        with open(UPLOAD_FOLDER + f"/{session['username']}" + '/' + filename, 'w') as f:
+
+            f.write(request.form['nm'])
+
+            return redirect(f'/uploads/{filename}')
+    
     else:
 
-        return redirect('/folder/' + folder)
+        with open(UPLOAD_FOLDER + f"/{session['username']}" + '/' + filename, 'r') as f:
+            
+            o = f.read()
 
-@app.route('/fuploads/<folder>/<path:filename>/delete')
-def fdelete_file(folder, filename):
-
-    if os.path.exists(UPLOAD_FOLDER + f"/{session['username']}" + f"/{folder}/" + filename):
-
-        try:
-
-            os.remove(UPLOAD_FOLDER + f"/{session['username']}" + f"/{folder}/" + filename)
-
-        except:
-
-            os.rmdir(UPLOAD_FOLDER + f"/{session['username']}" + f"/{folder}/" + filename)
-
-    return redirect('/folder/' + folder)
+        return render_template('edit.html', old=o)
 
 @app.route('/newfolder', methods=['GET', 'POST'])
 def makeFolder():
@@ -228,8 +234,8 @@ def makeFolder():
 
         return render_template("newfolder.html")
         
-@app.route('/<fo>/newfolder', methods=['GET', 'POST'])
-def makeFolderRecursive(fo):
+@app.route('/<path:fo>/newfolder', methods=['GET', 'POST'])
+def makeFolderNested(fo):
 
     if request.method == 'POST':
     
@@ -239,11 +245,49 @@ def makeFolderRecursive(fo):
 
             os.mkdir(UPLOAD_FOLDER + f"/{session['username']}" + '/' + fo + "/" + folder)
 
-        return redirect("/")
+        return redirect(f"/{fo}")
         
     else:
 
         return render_template("newfolder.html")
+
+@app.route('/newfile', methods=['GET', 'POST'])
+def makeFile():
+
+    if request.method == 'POST':
+    
+        filename = request.form['name']
+
+        if not os.path.exists(UPLOAD_FOLDER + f"/{session['username']}" + '/' + filename):
+
+            with open(UPLOAD_FOLDER + f"/{session['username']}" + "/" + filename, 'w') as f:
+
+                f.write("")
+
+        return redirect("/")
+        
+    else:
+
+        return render_template("newfile.html")
+        
+@app.route('/<path:fi>/newfile', methods=['GET', 'POST'])
+def makeFileNested(fi):
+
+    if request.method == 'POST':
+    
+        filename = request.form['name']
+
+        if not os.path.exists(UPLOAD_FOLDER + f"/{session['username']}" + '/' + fi + "/" + filename):
+
+            with open(UPLOAD_FOLDER + f"/{session['username']}" + '/' + fi + "/" + filename, 'w') as f:
+
+                f.write("")
+
+        return redirect(f"/{fi}")
+        
+    else:
+
+        return render_template("newfile.html")
 
 @app.errorhandler(404)
 def page_not_found(e):
