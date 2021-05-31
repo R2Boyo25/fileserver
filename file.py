@@ -120,7 +120,20 @@ def folderview(folder):
 
     else:
 
-        links=[f'<!--This Page Was Auto Generated-->\n<div align=\"center\">\n<br><h1><b>{folder}</b></h1><br>\n<input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">\n<br><ul id="myMenu">']
+        breadcrumbs = folder.split("/")
+
+        bread = []
+        active=""
+
+        for i in breadcrumbs:
+
+            active += "/"+i
+
+            bread.append(f"<a href=\"{active}\" style='color: gray; text-decoration: underline dotted;' >{i}</a>")
+
+        breadcrumb = " > ".join(bread)
+
+        links=[f'<!--This Page Was Auto Generated-->\n<div align=\"center\">\n<br><h1>{breadcrumb}</h1><br>\n<input type="text" id="mySearch" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">\n<br><ul id="myMenu">']
 
         f, fo = getFiles(UPLOAD_FOLDER + f"/{session['username']}" + "/" + folder)
 
