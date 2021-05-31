@@ -20,9 +20,9 @@ def home():
 
     #iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><div class=\"navbar\" style='background-color: white;'><div class=\"dropdown\"><button class=\"dropbtn\" style='background-color: gray;'>Options <i class=\"fa fa-caret-down\"></i><div class=\"dropdown-content\"><a> </a><a href={2} class=\"fa fa-download\"> Download</a><a> </a><a href={3} class=\"fa fa-trash\"> Delete</a></div></button></div></div> </div></li><br><br><br>"
 
-    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={5} class=\"fa fa-edit\"> Edit</a><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
+    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\" class='menu' ><table><tr><th><a href={5} class=\"fa fa-edit\"> Edit</a></th><th><a href={2} class=\"fa fa-download\"> Download</a></th><th><a href={3} class=\"fa fa-trash\"> Delete</a></th></tr></table></div></li><br><br><br>"
 
-    fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-trash\"> Delete</a> </div></li><br><br><br>"
+    fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><table><tr><th><a href={2} class=\"fa fa-trash\"> Delete</a> </th></tr></table></div></li><br><br><br>"
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -35,6 +35,8 @@ def home():
 
         # if user does not select file, browser also
         # submit an empty part without filename
+
+        
 
         if file.filename == '':
 
@@ -70,8 +72,8 @@ def home():
 
             links.append(fTemplate.format('/'+folder, folder, '/uploads/'+folder+'/delete'))
 
-        links.append("\n  <li><a href='/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></li>")
-        links.append("\n  <li><a href='/newfile'><i class='fa fa-plus'></i><b> New File</b></a></li>")
+        links.append("\n  <li><table><tr><th><a href='/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></th><th><a href='/newfile'><i class='fa fa-plus'></i><b> New File</b></a></th></tr></table></li>")
+        #links.append("\n  <li></li>")
         links.append('</ul></div>')
 
         if 'username' in session:
@@ -85,9 +87,9 @@ def home():
 @app.route('/<path:folder>/', methods=['GET', 'POST'])
 def folderview(folder):
 
-    fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={2} class=\"fa fa-trash\"> Delete</a> </div></li><br><br><br>"
+    fTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img src=https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678084-folder-512.png width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><table><tr><th><a href={2} class=\"fa fa-trash\"> Delete</a> </th></tr></table></div></li><br><br><br>"
 
-    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><a href={5} class=\"fa fa-edit\"> Edit</a><a href={2} class=\"fa fa-download\"> Download</a><a href={3} class=\"fa fa-trash\"> Delete</a></div></li><br><br><br>"
+    iTemplate = "\n  <li><a align='left' href='{0}'><span align=left><img onerror=\"this.onerror=null;this.src='{4}';\" src={0} width='100' height='100' align=left/></span> <span class='rig'><b><br><br><br>{1}</b></span></a><div align=\"right\"><table><tr><th><a href={5} class=\"fa fa-edit\"> Edit</a></th><th><a href={2} class=\"fa fa-download\"> Download</a></th><th><a href={3} class=\"fa fa-trash\"> Delete</a></th></tr></table></div></li><br><br><br>"
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -128,9 +130,9 @@ def folderview(folder):
         for folder2 in fo:
             links.append(fTemplate.format('/'+folder+"/"+folder2, folder2, '/uploads/'+folder+"/"+folder2+'/delete'))
 
-        links.append(f"\n  <li><a href='/{'/'.join(folder.split('/')[0:-1])}'><i class='fa fa-arrow-left'></i><b> Back</b></a></li>")
-        links.append(f"\n  <li><a href='/{folder}/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></li>")
-        links.append(f"\n  <li><a href='/{folder}/newfile'><i class='fa fa-plus'></i><b> New File</b></a></li>")
+        links.append(f"\n  <li><table><tr><th><a href='/{'/'.join(folder.split('/')[0:-1])}'><i class='fa fa-arrow-left'></i><b> Back</b></a></th><th><a href='/{folder}/newfolder'><i class='fa fa-plus'></i><b> New Folder</b></a></th><th><a href='/{folder}/newfile'><i class='fa fa-plus'></i><b> New File</b></a></th></tr></table></li>")
+        #links.append(f"\n  <li></li>")
+        #links.append(f"\n  <li></li>")
         links.append('</ul></div>')
 
         if 'username' in session:
