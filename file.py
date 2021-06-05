@@ -338,21 +338,23 @@ def login():
         data = db('logins.json')
         keys = data.keys()
 
-        if request.form['username'] in keys:
+        user = request.form['username']
 
-            if request.form['password'] == data.get(request.form['username']):
+        if user in keys:
 
-                session['username'] = request.form['username']
+            if hashPassword(request.form['password'], user) == data.get(user):
+
+                session['username'] = user
 
                 return redirect(url_for('home'))
             
             else:
 
-                return render_template('login.html', error = f"Incorrect password for {request.form['username']}...")
+                return render_template('login.html', error = f"Incorrect password for {user}...")
 
         else:
 
-            return render_template('login.html', error = f"Username {request.form['username']} not found...")
+            return render_template('login.html', error = f"Username {user} not found...")
 
     return render_template('login.html')
 
@@ -364,17 +366,19 @@ def register():
         data = db('logins.json')
         keys = data.keys()
 
-        if not request.form['username'] in keys:
+        user = request.form['username']
 
-            data.set(request.form['username'], request.form['password'])
+        if not user in keys:
 
-            os.mkdir(UPLOAD_FOLDER + f"/{request.form['username']}")
+            data.set(user, hashPassword(request.form['password'], user))
 
-            return render_template('register.html', error = 'You Are now Registered As {}'.format(request.form['username']))
+            os.mkdir(UPLOAD_FOLDER + f"/{user}")
+
+            return render_template('register.html', error = 'You Are now Registered As {}'.format(user))
 
         else:
 
-            return render_template('register.html', error = 'The username "{}" is already in use.'.format(request.form['username']))
+            return render_template('register.html', error = 'The username "{}" is already in use.'.format(user))
 
     return render_template('register.html')
 
