@@ -8,12 +8,4 @@ The program generates a file called `logins.json` with the contents of:
 ```
 {}
 ```
-You can add accounts manually in that file, heres an example:
-```json
-{
-"Name1":"password1",
-"Name2":"password2",
-"Name3":"password3"
-}
-```
 (x) Hashes passwords
