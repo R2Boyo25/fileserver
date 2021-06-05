@@ -16,4 +16,4 @@ You can add accounts manually in that file, heres an example:
 "Name3":"password3"
 }
 ```
-(Will switch to hashing passwords later on)
+(x) Hashes passwords
